@@ -35,19 +35,17 @@ class SastEngine:
         violations = []
         for rule in self.rules:
             violations.extend(rule.run(lines))
-        
-        # Agora o método existe dentro da classe e será encontrado
+
         violations.extend(self.generate_mock_data())
         
         self.export_report(violations)
         self.enforce_policy(violations)
         
     def export_report(self, violations):
-        # Filtra apenas o que é relevante para o dashboard
         relevant_findings = [v for v in violations if v.get('cwe')] 
         criticals = sum(1 for v in relevant_findings if v['severity'] == 'CRITICAL')
         
-        # O total do card agora é o tamanho real da lista
+
         report = {
             "summary": {
                 "critical_count": criticals,
@@ -64,7 +62,7 @@ class SastEngine:
         logging.info(f"Enterprise Analysis Complete. Artifact: {output_path}")
 
     def enforce_policy(self, violations):
-        # ... (mantém a lógica anterior de exit) ...
+
         sys.exit(0)
 
 if __name__ == "__main__":
