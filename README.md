@@ -15,6 +15,18 @@ NyxOne opera mediante un motor de análisis estático (SAST) que procesa la estr
 *   **CWE-798 (Hardcoded Credentials):** Identificación de secretos expuestos.
 *   **CWE-22 (Path Traversal):** Análisis de rutas de archivos inseguras.
 
+## 🛠️ DevSecOps & Infraestructura
+
+NyxOne está diseñado para ser integrado desde el primer día en pipelines de automatización, garantizando que la seguridad sea un estándar de calidad, no una revisión manual.
+
+### Integración CI/CD
+El repositorio incluye una configuración de **Jenkins Pipeline** (`Jenkinsfile`) que automatiza el proceso de auditoría:
+- **Security Analysis Stage:** Ejecuta el motor de NyxOne de forma automatizada sobre el código fuente antes de cualquier despliegue.
+- **Fail-Fast Compliance:** Si se detectan vulnerabilidades críticas (ex: SQLi o Hardcoded Secrets), el pipeline se interrumpe inmediatamente para prevenir despliegues inseguros.
+
+### Contenedorización
+Para garantizar la portabilidad y coherencia del entorno de escaneo, NyxOne incluye un **Dockerfile** optimizado, permitiendo que el motor de seguridad sea ejecutado en cualquier entorno de integración (Docker, Kubernetes o entornos Cloud nativos) sin conflictos de dependencias.
+
 ### Visualización Ejecutiva (BI Dashboard)
 El dashboard centraliza la postura de seguridad (Security Posture), permitiendo a los equipos de ingeniería y liderazgo comprender:
 - **Prioridad:** Badges de severidad (🔴 Crítico, 🟡 Alto, 🟠 Medio).

@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # O motor que executa o scan
   sast-engine:
     build: .
     container_name: veredict-engine
@@ -9,7 +8,6 @@ services:
       - .:/app
     environment:
       - ENV=production
-      # As senhas devem vir do .env, mas mantemos o mapeamento aqui
       - DB_HOST=db 
     command: python3 core/scanner.py --target samples/vulnerable_app.py
     networks:
@@ -17,7 +15,6 @@ services:
     depends_on:
       - db
 
-  # O banco de dados para testes de injeção real
   db:
     image: postgres:16-alpine
     container_name: nexus-db

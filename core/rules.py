@@ -1,13 +1,12 @@
 from abc import ABC, abstractmethod
 import re
 
-# 1. Primeiro define a classe base
 class SecurityRule(ABC):
     @abstractmethod
     def run(self, lines):
         pass
 
-# 2. Depois define as implementações que herdam de SecurityRule
+
 class SQLInjectionRule(SecurityRule):
     """Detects SQL injection (CWE-89) with business context metadata."""
     def run(self, lines):
