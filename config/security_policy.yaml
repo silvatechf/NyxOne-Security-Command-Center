@@ -1,0 +1,35 @@
+# Nexus-DevSecOps-Engine: Security Policy Configuration
+# Gold Standard: Critical severity triggers Build Failure (Fail-Fast)
+
+rules:
+  sql_injection:
+    severity: CRITICAL
+    action: BLOCK
+    description: "Detected direct concatenation in SQL queries. Potential SQLi."
+  
+  hardcoded_secrets:
+    severity: CRITICAL
+    action: BLOCK
+    description: "Detected potential API keys or passwords in plaintext."
+
+  outdated_libraries:
+    severity: MEDIUM
+    action: WARN
+    description: "Library version is outdated. Recommended upgrade."
+
+threshold:
+  fail_on: CRITICAL  # Bloqueia o build se encontrar CRITICAL
+
+
+
+
+rules:
+  sql_injection:
+    severity: CRITICAL
+    description: "Detected direct SQL query concatenation using f-strings."
+  hardcoded_secrets:
+    severity: CRITICAL
+    description: "Potential plaintext credentials or keys detected in source code."
+
+threshold:
+  fail_on: CRITICAL

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> NyxOne | Security Command Center</title>
+    <style>
+        :root { --bg: #050505; --card: #0d0d0d; --neon: #00ff9d; --crit: #ff4d4d; --high: #f59e0b; --med: #eab308; }
+        body { background: var(--bg); color: #eee; font-family: 'Inter', sans-serif; padding: 2rem; }
+        .container { max-width: 1100px; margin: auto; }
+
+        /* Estilo dos Cards com Bordas de Hierarquia */
+        .grid-header { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+        .card { background: var(--card); border: 1px solid #222; padding: 20px; border-radius: 8px; position: relative; }
+        .border-crit { border-left: 4px solid var(--crit); }
+        .border-neon { border-left: 4px solid var(--neon); }
+        .border-high { border-left: 4px solid var(--high); }
+        .border-base { border-left: 4px solid #444; }
+
+        .stat-label { font-size: 0.6rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-num { font-size: 1.6rem; font-weight: 800; margin-top: 5px; }
+        .sub { font-size: 0.65rem; color: #666; margin-top: 5px; }
+        .trend { font-size: 0.65rem; font-weight: bold; }
+
+        /* Badges de Tabela */
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; border: 1px solid #333; display: inline-flex; align-items: center; gap: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
+            <div><h1>NyxOne</h1><p style="color:#666">Security Command Center</p></div>
+            <div style="text-align: right; border-left: 2px solid var(--crit); padding-left: 15px;">
+                <div class="stat-label">SECURITY POSTURE</div>
+                <div style="font-size: 2rem; color: var(--crit); font-weight: 900;">D <span style="font-size: 0.9rem; color:#666; font-weight: normal;">(Needs Improvement)</span></div>
+            </div>
+        </div>
+
+        <div class="grid-header">
+            <div class="card border-base"><div class="stat-label">SCANNED ASSETS</div><div class="stat-num">12</div><div class="sub">Repositories</div></div>
+            <div class="card border-crit">
+                <div class="stat-label">CRITICAL VULNS</div>
+                <div class="stat-num" id="crit-count" style="color:var(--crit)">0</div>
+                <div class="sub" id="crit-pct">0% of assets</div>
+                <div class="trend" style="color:var(--crit)">▲ 2 from last scan</div>
+            </div>
+            <div class="card border-high"><div class="stat-label">FIX TIME (EST)</div><div class="stat-num">3h</div><div class="sub">Estimated effort</div></div>
+            <div class="card border-neon"><div class="stat-label">OWASP COVERAGE</div><div class="stat-num">82%</div><div class="sub">Top 10 Metrics</div></div>
+        </div>
+
+        <div class="card">
+            <h3>Vulnerability Ledger</h3>
+            <table id="ledger" style="width: 100%; border-spacing: 0 8px; border-collapse: separate;">
+                <thead><tr style="color:#555; font-size:0.65rem; text-transform:uppercase;"><th>Asset</th><th>Rule</th><th>CWE</th><th>Severity</th><th>CVSS</th><th>Action</th></tr></thead>
+                <tbody id="ledger-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="security_data.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const r = sastReport;
+            const b = document.getElementById('ledger-body');
+            const icons = { 'CRITICAL': '🔴', 'HIGH': '🟡', 'MEDIUM': '🟠' };
+
+            document.getElementById('crit-count').innerText = r.summary.critical_count;
+            document.getElementById('crit-pct').innerText = ((r.summary.critical_count / 12) * 100).toFixed(1) + "% of assets";
+
+            b.innerHTML = r.findings.map(f => `
+                <tr style="background:#0d0d0d">
+                    <td style="padding:15px">${f.asset}</td>
+                    <td style="padding:15px"><strong>${f.rule_id}</strong></td>
+                    <td style="padding:15px"><code>${f.cwe}</code></td>
+                    <td style="padding:15px"><span class="badge" style="border-color:var(--${f.severity.toLowerCase()})">${icons[f.severity]} ${f.severity}</span></td>
+                    <td style="padding:15px; color:${f.cvss > 9 ? '#ff4d4d' : '#fbbf24'}">${f.cvss}</td>
+                    <td style="padding:15px; text-align:right; cursor:pointer; color:#666">Details →</td>
+                </tr>
+            `).join('');
+        });
+    </script>
+</body>
+</html>

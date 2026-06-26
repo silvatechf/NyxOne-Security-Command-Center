@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # O motor que executa o scan
+  sast-engine:
+    build: .
+    container_name: veredict-engine
+    volumes:
+      - .:/app
+    environment:
+      - ENV=production
+      # As senhas devem vir do .env, mas mantemos o mapeamento aqui
+      - DB_HOST=db 
+    command: python3 core/scanner.py --target samples/vulnerable_app.py
+    networks:
+      - secure-net
+    depends_on:
+      - db
+
+  # O banco de dados para testes de injeção real
+  db:
+    image: postgres:16-alpine
+    container_name: nexus-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: securepassword123
+      POSTGRES_DB: app_db
+    networks:
+      - secure-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  secure-net:
+    driver: bridge
